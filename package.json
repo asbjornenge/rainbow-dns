@@ -22,6 +22,9 @@
   },
   "homepage": "https://github.com/asbjornenge/rainbow-dns",
   "dependencies": {
-    "hapi": "^6.8.1"
+    "ansi-rainbow": "0.0.8",
+    "chalk": "^0.5.1",
+    "hapi": "^6.8.1",
+    "minimist": "^1.1.0"
   }
 }
