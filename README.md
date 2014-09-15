@@ -1,5 +1,10 @@
-# DNS Server with a rest API
+# DNS Server with http API
 
-Inspired by [skydns](https://github.com/skynetservices/skydns), restdns is a DNS server offering a http API for populating it's records.
+Rainbow-dns will be a DNS server with an http API for populating it's records. Inspired by [skydns](https://github.com/skynetservices/skydns).
 
+Features
 
+* flexible backend
+* flexible domain
+* ttl
+* SRV records

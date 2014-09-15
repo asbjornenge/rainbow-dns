@@ -1,0 +1,24 @@
+{
+  "name": "rainbow-dns",
+  "version": "1.0.0",
+  "description": "DNS server with http API",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/asbjornenge/rainbow-dns.git"
+  },
+  "keywords": [
+    "dns",
+    "server",
+    "api"
+  ],
+  "author": "Asbjorn Enge <asbjorn@hanafjedle.net>",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/asbjornenge/rainbow-dns/issues"
+  },
+  "homepage": "https://github.com/asbjornenge/rainbow-dns"
+}
