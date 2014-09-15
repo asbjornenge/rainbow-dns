@@ -1,19 +1,22 @@
 var argv = require('minimist')(process.argv.slice(2), {
     default : {
-        host : '127.0.0.1',
-        port : '8080'
+        host  : '127.0.0.1',
+        port  : '8080',
+        store : 'mem'
     }
 })
 var utils = require('./utils')
 var api   = require('./api')
 
-// backend ready
-
-// start http server
-// start dns server
-
 
 utils.displayVersionMaybe(argv)
-// console.log(argv.v || argv.version)
+utils.displayHelpMaybe(argv)
+var store = utils.selectStore(argv)
 
-// api(defaults.host, defaults.port).start()
+// store ready
+store.ready(function () {
+    // start dns server
+
+    // start http server
+    api(argv.host, argv.port, store).start()
+})

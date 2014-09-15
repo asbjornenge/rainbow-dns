@@ -1,8 +1,8 @@
 function MemStore(config) {
     this.data = {}
 }
-MemStore.prototype.isReady = function() {
-    return true
+MemStore.prototype.ready = function(callback) {
+    callback()
 }
 MemStore.prototype.get = function(key, callback) {
     if (typeof callback === 'function') callback(null, this.data[key])
@@ -18,7 +18,6 @@ MemStore.prototype.del = function (key, callback) {
     delete this.data[key]
     if (typeof callback === 'function') callback(null)
 }
-
 module.exports = function (config) {
     return new MemStore(config)
 }
