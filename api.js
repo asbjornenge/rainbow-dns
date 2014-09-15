@@ -5,7 +5,16 @@ var rainbow = require('ansi-rainbow')
 var routes = [
     {
         method: 'GET',
-        path: '/hello',
+        path: '/',
+        handler: function (request, reply) {
+            request.store.list(function (all_records) {
+                reply(all_records)
+            })
+        }
+    },
+    {
+        method: 'GET',
+        path: '/list',
         handler: function (request, reply) {
             console.log(request.store)
             reply('hello world');
