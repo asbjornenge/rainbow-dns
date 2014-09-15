@@ -20,5 +20,8 @@
   "bugs": {
     "url": "https://github.com/asbjornenge/rainbow-dns/issues"
   },
-  "homepage": "https://github.com/asbjornenge/rainbow-dns"
+  "homepage": "https://github.com/asbjornenge/rainbow-dns",
+  "dependencies": {
+    "hapi": "^6.8.1"
+  }
 }
