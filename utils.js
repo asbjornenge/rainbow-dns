@@ -24,6 +24,10 @@ module.exports = {
     selectStore : function (argv) {
         if (stores[argv.store] == undefined) console.log(chalk.red('ERROR ')+'no such datastore '+argv.store)
         return stores[argv.store]()
+    },
+
+    displayStartMessage : function (argv) {
+        console.log(rainbow.r('Domain ')+chalk.bgBlue(argv.domain))
     }
 
 }

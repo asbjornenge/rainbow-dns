@@ -1,8 +1,9 @@
 var argv = require('minimist')(process.argv.slice(2), {
     default : {
-        host  : '127.0.0.1',
-        port  : '8080',
-        store : 'mem'
+        host   : '127.0.0.1',
+        port   : '8080',
+        store  : 'mem',
+        domain : require('random-domain')()
     }
 })
 var utils = require('./utils')
@@ -19,4 +20,5 @@ store.ready(function () {
 
     // start http server
     api(argv.host, argv.port, store).start()
+    utils.displayStartMessage(argv)
 })

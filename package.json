@@ -25,6 +25,7 @@
     "ansi-rainbow": "0.0.8",
     "chalk": "^0.5.1",
     "hapi": "^6.8.1",
-    "minimist": "^1.1.0"
+    "minimist": "^1.1.0",
+    "random-domain": "^1.0.2"
   }
 }
