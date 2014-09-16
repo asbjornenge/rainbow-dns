@@ -21,7 +21,7 @@ var routes = [
             var obj = utils.wrapDefaults(encodeURIComponent(request.params.name), request.payload, request.argv)
             request.store.set(obj.name, obj.payload, function (err, set_value) {
                 if (err) console.log('NEED ERROR HANDLING! GAAH!')
-                reply(JSON.stringify(obj));
+                reply('OK.');
             })
         }
     },
@@ -51,7 +51,8 @@ module.exports = function (argv,store) {
     server.realStart = server.start
     server.start = function () {
         this.realStart(function () {
-            console.log(rainbow.r('api       '), chalk.bgBlue.white(server.info.uri), chalk.green('✔'))
+            utils.displayServiceStatus('api',server.info.uri, true)
+            // console.log(rainbow.r('api       '), chalk.bgBlue.white(server.info.uri), chalk.green('✔'))
         })
     }
     return server

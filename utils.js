@@ -27,9 +27,20 @@ module.exports = {
     },
 
     displayStartMessage : function (argv) {
-        console.log(rainbow.r('nameserver ')+chalk.bgBlue(argv.nameserver))
-        console.log(rainbow.r('domain     ')+chalk.bgBlue(argv.domain))
-        console.log(rainbow.r('ttl        ')+chalk.bgBlue(argv.ttl))
+        // console.log(rainbow.r('nameserver ')+chalk.bgBlue(argv.nameserver))
+        this.displayServiceStatus('domain', argv.domain)
+        // console.log(rainbow.r('ttl        ')+chalk.bgBlue(argv.ttl))
+    },
+
+    displayServiceStatus : function (service, meta, check) {
+        console.log(rainbow.r(this.fillSpaces(service,6))+' '+this.fillSpaces(meta,21)+' '+(check ? chalk.green('✔') : ''))
+    },
+
+    fillSpaces : function (word, len) {
+        while(word.length < len) {
+            word = word+' '
+        }
+        return word
     },
 
     wrapDefaults : function (name, payload, argv) {

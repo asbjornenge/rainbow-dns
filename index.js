@@ -10,6 +10,7 @@ var argv = require('minimist')(process.argv.slice(2), {
 })
 var utils  = require('./utils')
 var api    = require('./api')
+var dns    = require('./dns')
 var ttloop = require('./ttloop')
 
 
@@ -17,11 +18,8 @@ utils.displayVersionMaybe(argv)
 utils.displayHelpMaybe(argv)
 var store = utils.selectStore(argv)
 
-// store ready
 store.ready(function () {
-    // start dns server
-
-    // start http server
+    dns(argv, store).start()
     api(argv, store).start()
     ttloop(store).start()
     utils.displayStartMessage(argv)
