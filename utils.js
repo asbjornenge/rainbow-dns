@@ -36,6 +36,12 @@ module.exports = {
         console.log(rainbow.r(this.fillSpaces(service,6))+' '+this.fillSpaces(meta,21)+' '+(check ? chalk.green('✔') : ''))
     },
 
+    displayErrorMessage : function (msg, err, props) {
+        console.log(chalk.red('ERROR: ')+msg, err)
+        if (props.hint) console.log(chalk.cyan('HINT: ')+props.hint)
+        if (props.exit) process.exit(1)
+    },
+
     fillSpaces : function (word, len) {
         while(word.length < len) {
             word = word+' '

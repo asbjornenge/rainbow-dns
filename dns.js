@@ -91,9 +91,19 @@ RainbowDns.prototype.handleSRVRequest = function (request, response) {
 }
 RainbowDns.prototype.start = function () {
     this.server.on('request', this.handleRequest.bind(this))
-    this.server.serve(53, function () {
+    this.server.on('listening', function () {
         utils.displayServiceStatus('dns', 'udp://127.0.0.1:53', true)
     }.bind(this))
+    this.server.on('close', function () {
+        utils.displayErrorMessage('DNS socket unexpectedly closed', null, { exit : true })
+    })
+    this.server.on('error', function (err) {
+        utils.displayErrorMessage('Unknown DNS error', err, { exit : true })
+    })
+    this.server.on('socketError', function (err) {
+        utils.displayErrorMessage('DNS socket error occurred', err, { exit : true, hint : 'Port might be in use or you might not have permissions to bind to port. Try sudo?' })
+    })
+    this.server.serve(53)
 }
 
 module.exports = function (argv, store) {
