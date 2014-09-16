@@ -27,7 +27,9 @@ module.exports = {
     },
 
     displayStartMessage : function (argv) {
-        console.log(rainbow.r('Domain ')+chalk.bgBlue(argv.domain))
+        console.log(rainbow.r('nameserver ')+chalk.bgBlue(argv.nameserver))
+        console.log(rainbow.r('domain     ')+chalk.bgBlue(argv.domain))
+        console.log(rainbow.r('ttl        ')+chalk.bgBlue(argv.ttl))
     }
 
 }

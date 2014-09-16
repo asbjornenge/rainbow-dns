@@ -1,5 +1,5 @@
-var Hapi  = require('hapi')
-var chalk = require('chalk')
+var Hapi    = require('hapi')
+var chalk   = require('chalk')
 var rainbow = require('ansi-rainbow')
 
 var routes = [
@@ -37,7 +37,7 @@ module.exports = function (host,port,store) {
     server.realStart = server.start
     server.start = function () {
         this.realStart(function () {
-            console.log(rainbow.r('API up'), chalk.bgBlue.white(server.info.uri), chalk.green('✔'))
+            console.log(rainbow.r('api       '), chalk.bgBlue.white(server.info.uri), chalk.green('✔'))
         })
     }
     return server
