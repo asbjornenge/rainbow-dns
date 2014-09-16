@@ -8,8 +8,9 @@ var argv = require('minimist')(process.argv.slice(2), {
         nameserver : '8.8.8.8'
     }
 })
-var utils = require('./utils')
-var api   = require('./api')
+var utils  = require('./utils')
+var api    = require('./api')
+var ttloop = require('./ttloop')
 
 
 utils.displayVersionMaybe(argv)
@@ -22,5 +23,6 @@ store.ready(function () {
 
     // start http server
     api(argv, store).start()
+    ttloop(store).start()
     utils.displayStartMessage(argv)
 })

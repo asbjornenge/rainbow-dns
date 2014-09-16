@@ -33,15 +33,18 @@ module.exports = {
     },
 
     wrapDefaults : function (name, payload, argv) {
-        console.log(payload)
         name = name+'.'+(payload.domain || argv.domain)
         if (!payload.domain) payload.domain = argv.domain
         if (!payload.ttl) payload.ttl       = argv.ttl
-        payload.date                        = new Date().getTime()
+        payload.time                        = this.getUnixTime()
         return {
             name    : name,
             payload : payload
         }
+    },
+
+    getUnixTime : function () {
+        return Math.floor(new Date().getTime() / 1000)
     }
 
 }
