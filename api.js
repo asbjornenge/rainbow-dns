@@ -7,17 +7,20 @@ var routes = [
         method: 'GET',
         path: '/',
         handler: function (request, reply) {
-            request.store.list(function (all_records) {
+            request.store.list(function (err, all_records) {
+                if (err) console.log('NEED ERROR HANDLING! GAAH!')
                 reply(all_records)
             })
         }
     },
     {
-        method: 'GET',
-        path: '/list',
+        method: 'PUT',
+        path: '/{name}',
         handler: function (request, reply) {
-            console.log(request.store)
-            reply('hello world');
+            request.store.set(encodeURIComponent(request.params.name), request.payload, function (err, set_value) {
+                if (err) console.log('NEED ERROR HANDLING! GAAH!')
+                reply(JSON.stringify(set_value));
+            })
         }
     }
 ]
