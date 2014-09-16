@@ -1,6 +1,12 @@
 var dns   = require('native-dns')
 var utils = require('./utils')
 
+var match = function (record, query) {
+    var wildcard = false
+    if (query[0] == '*') { query = query.split('*.')[1]; wildcard = true }
+    return wildcard ? record.indexOf(query) >= 0 : record.indexOf(query) == 0
+}
+
 var RainbowDns = function (argv, store) {
     this.argv       = argv
     this.store      = store
@@ -30,8 +36,58 @@ RainbowDns.prototype.forward = function (request, response) {
     req.send()
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
-    console.log('dns request')
-    this.forward(request.question[0], response)
+    // TODO: Add wildcard support
+    var _request = request.question[0]
+    switch(_request.type) {
+        case 1:
+            this.handleARequest(request, response)
+            break
+        case 28:
+            this.handleAAAARequest(request, response)
+            break
+        case 33:
+            this.handleSRVRequest(request, response)
+            break
+    }
+    if (response.answer.length > 0) response.send()
+    else this.forward(request.question[0], response)
+}
+RainbowDns.prototype.handleARequest = function (request, response) {
+    var query = request.question[0].name
+    this.store.list(function (err, records) {
+        if (err) { console.log(err); process.exit(1) }
+        Object.keys(records).forEach(function (record) {
+            if (match(record,query)) {
+                records[record].ipv4.forEach(function (ip) {
+                    response.answer.push(dns.A({
+                      name    : record,
+                      address : ip,
+                      ttl     : records[record].ttl,
+                    }));
+                })
+            }
+        })
+    })
+}
+RainbowDns.prototype.handleAAAARequest = function (request, response) {
+    var query = request.question[0].name
+    this.store.list(function (err, records) {
+        if (err) { console.log(err); process.exit(1) }
+            Object.keys(records).forEach(function (record) {
+                if (match(record, query)) {
+                    records[record].ipv6.forEach(function (ip) {
+                        response.answer.push(dns.AAAA({
+                          name    : record,
+                          address : ip,
+                          ttl     : records[record].ttl,
+                        }));
+                    })
+                }
+            })
+    })
+}
+RainbowDns.prototype.handleSRVRequest = function (request, response) {
+
 }
 RainbowDns.prototype.start = function () {
     this.server.on('request', this.handleRequest.bind(this))

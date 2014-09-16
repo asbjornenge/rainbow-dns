@@ -52,7 +52,6 @@ module.exports = function (argv,store) {
     server.start = function () {
         this.realStart(function () {
             utils.displayServiceStatus('api',server.info.uri, true)
-            // console.log(rainbow.r('api       '), chalk.bgBlue.white(server.info.uri), chalk.green('✔'))
         })
     }
     return server
