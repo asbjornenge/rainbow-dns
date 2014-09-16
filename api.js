@@ -1,6 +1,7 @@
 var Hapi    = require('hapi')
 var chalk   = require('chalk')
 var rainbow = require('ansi-rainbow')
+var utils   = require('./utils.js')
 
 var routes = [
     {
@@ -17,21 +18,34 @@ var routes = [
         method: 'PUT',
         path: '/{name}',
         handler: function (request, reply) {
-            request.store.set(encodeURIComponent(request.params.name), request.payload, function (err, set_value) {
+            var obj = utils.wrapDefaults(encodeURIComponent(request.params.name), request.payload, request.argv)
+            request.store.set(obj.name, obj.payload, function (err, set_value) {
                 if (err) console.log('NEED ERROR HANDLING! GAAH!')
-                reply(JSON.stringify(set_value));
+                reply(JSON.stringify(obj));
+            })
+        }
+    },
+    {
+        method: 'DELETE',
+        path: '/{name}',
+        handler: function (request, reply) {
+            var obj = utils.wrapDefaults(encodeURIComponent(request.params.name), request.payload, request.argv)
+            request.store.del(obj.name, function (err, set_value) {
+                if (err) console.log('NEED ERROR HANDLING! GAAH!')
+                reply(obj.name+' removed.');
             })
         }
     }
 ]
 
-module.exports = function (host,port,store) {
-    var server = new Hapi.Server(host, port)
+module.exports = function (argv,store) {
+    var server = new Hapi.Server(argv.host, argv.port)
     routes.forEach(function (route) {
         server.route(route)
     })
     server.ext('onRequest', function (request, next) {
         request.store = store
+        request.argv  = argv
         next()
     })
     server.realStart = server.start

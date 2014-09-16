@@ -30,6 +30,18 @@ module.exports = {
         console.log(rainbow.r('nameserver ')+chalk.bgBlue(argv.nameserver))
         console.log(rainbow.r('domain     ')+chalk.bgBlue(argv.domain))
         console.log(rainbow.r('ttl        ')+chalk.bgBlue(argv.ttl))
+    },
+
+    wrapDefaults : function (name, payload, argv) {
+        console.log(payload)
+        name = name+'.'+(payload.domain || argv.domain)
+        if (!payload.domain) payload.domain = argv.domain
+        if (!payload.ttl) payload.ttl       = argv.ttl
+        payload.date                        = new Date().getTime()
+        return {
+            name    : name,
+            payload : payload
+        }
     }
 
 }

@@ -21,6 +21,6 @@ store.ready(function () {
     // start dns server
 
     // start http server
-    api(argv.host, argv.port, store).start()
+    api(argv, store).start()
     utils.displayStartMessage(argv)
 })
