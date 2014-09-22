@@ -1,4 +1,10 @@
+var path  = require('path')
 var utils = require('./utils')
+
+var pathToStatic = function (static_param) {
+    if (static_param[0] != '/') static_param = process.cwd()+'/'+static_param
+    return path.resolve(static_param)
+}
 
 var StaticLoop = function(argv, store) {
     this.argv  = argv
@@ -9,7 +15,7 @@ StaticLoop.prototype.start = function () {
     this.interval = setInterval(this.populate.bind(this), (this.argv.ttl*1000)-10)
 }
 StaticLoop.prototype.populate = function () {
-    var records = require(this.argv.static).records
+    var records = require(pathToStatic(this.argv.static)).records
     records.forEach(function (record) {
         var obj = utils.wrapDefaults(record.name, record, this.argv)
         this.store.set(obj.name, obj.payload, function (err, set_value) {
