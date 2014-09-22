@@ -31,10 +31,12 @@
     DELETE /{name}
         Delete record name.domain
 
+    /* Valid JSON struct
     {
         "ipv4" : ["192.168.1.1","192.168.10.1"],   // A records - valid ipv4 addresses
         "ipv6" : ["2605:f8b0:4006:802:0:0:0:1010"] // AAAA records - valid ipv6 addresses
     }
+    */
 
 The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be overwritten by PUTs.
 
