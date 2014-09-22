@@ -11,7 +11,7 @@ var RainbowDns = function (argv, store) {
     this.argv       = argv
     this.store      = store
     this.server     = dns.createServer()
-    this.nameserver = { address: argv.nshost, port: argv.nsport, type: 'udp' }
+    this.nameserver = { address: argv.fwdhost, port: argv.fwdport, type: 'udp' }
 }
 RainbowDns.prototype.forward = function (request, response) {
     var req = dns.Request({
