@@ -12,7 +12,6 @@ Ttloop.prototype.check = function () {
         if (err) { console.log(err); this.stop(); process.exit(1) }
         Object.keys(records).forEach(function (record) {
             var r = records[record]
-            if (r.ttl == 0) return // 0 means keep record inf.
             if (r.time+r.ttl < now) this.store.del(record)
         }.bind(this))
     }.bind(this))

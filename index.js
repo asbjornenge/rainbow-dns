@@ -4,6 +4,7 @@ var argv = require('minimist')(process.argv.slice(2), {
         port       : '8080',
         store      : 'mem',
         domain     : require('random-domain')(),
+        ttl        : 300,
         nameserver : '8.8.8.8'
     }
 })
@@ -19,6 +20,6 @@ var store = utils.selectStore(argv)
 store.ready(function () {
     dns(argv, store).start()
     api(argv, store).start()
-    if (argv.ttl) ttloop(store).start()
+    ttloop(store).start()
     utils.displayStartMessage(argv)
 })
