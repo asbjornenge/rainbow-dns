@@ -26,7 +26,7 @@
     /* Valid static.json
     {
         "records" : [
-            { "name" : "dns", "ipv4" : ["192.168.1.72"] }
+            { "name" : "dns", "ipv4" : ["192.168.1.100"] }
         ]
     }
     */
