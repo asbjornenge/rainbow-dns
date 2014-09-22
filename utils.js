@@ -22,7 +22,7 @@ module.exports = {
     },
 
     selectStore : function (argv) {
-        if (stores[argv.store] == undefined) console.log(chalk.red('ERROR ')+'no such datastore '+argv.store)
+        if (stores[argv.store] == undefined) { console.log(chalk.red('ERROR ')+'no such datastore '+argv.store); process.exit(1) }
         return stores[argv.store]()
     },
 
