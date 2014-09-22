@@ -67,6 +67,10 @@ The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be over
 
 ## Changelog
 
+### 1.1.1
+
+* Support relative paths for --static
+
 ### 1.1.0
 
 * Added support for static records
