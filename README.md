@@ -1,6 +1,6 @@
 # DNS Server with http API
 
-Rainbow-dns is a DNS server with an http API for populating it's records. Inspired by [skydns](https://github.com/skynetservices/skydns).
+:rainbow:-dns is a DNS server with an http API for populating it's records. Inspired by [skydns](https://github.com/skynetservices/skydns).
 
 ## Install
 
