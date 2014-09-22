@@ -2,9 +2,6 @@
 
 Rainbow-dns is a DNS server with an http API for populating it's records. Inspired by [skydns](https://github.com/skynetservices/skydns).
 
-**Missing:**
-* SRV records
-
 ## Install
 
     npm install -g rainbow-dns
@@ -51,6 +48,11 @@ The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be over
     // => 192.168.1.1
     dig @localhost "*.polychromatic.mo" +short
     // => 192.168.1.1
+
+
+## Missing
+
+* SRV records
 
 ## Changelog
 
