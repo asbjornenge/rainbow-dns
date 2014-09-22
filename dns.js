@@ -11,7 +11,7 @@ var RainbowDns = function (argv, store) {
     this.argv       = argv
     this.store      = store
     this.server     = dns.createServer()
-    this.nameserver = { address: argv.nameserver, port: 53, type: 'udp' }
+    this.nameserver = { address: argv.nshost, port: argv.nsport, type: 'udp' }
 }
 RainbowDns.prototype.forward = function (request, response) {
     var req = dns.Request({
@@ -92,7 +92,7 @@ RainbowDns.prototype.handleSRVRequest = function (request, response) {
 RainbowDns.prototype.start = function () {
     this.server.on('request', this.handleRequest.bind(this))
     this.server.on('listening', function () {
-        utils.displayServiceStatus('dns', 'udp://127.0.0.1:53', true)
+        utils.displayServiceStatus('dns', 'udp://'+this.argv.dnshost+':'+this.argv.dnsport, true)
     }.bind(this))
     this.server.on('close', function () {
         utils.displayErrorMessage('DNS socket unexpectedly closed', null, { exit : true })
@@ -103,7 +103,7 @@ RainbowDns.prototype.start = function () {
     this.server.on('socketError', function (err) {
         utils.displayErrorMessage('DNS socket error occurred', err, { exit : true, hint : 'Port might be in use or you might not have permissions to bind to port. Try sudo?' })
     })
-    this.server.serve(53)
+    this.server.serve(this.argv.dnsport, this.argv.dnshost)
 }
 
 module.exports = function (argv, store) {

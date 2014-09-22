@@ -1,11 +1,14 @@
 var argv = require('minimist')(process.argv.slice(2), {
     default : {
-        host       : '127.0.0.1',
-        port       : '8080',
-        store      : 'mem',
-        domain     : require('random-domain')(),
-        ttl        : 300,
-        nameserver : '8.8.8.8'
+        apihost : '127.0.0.1',
+        apiport : 8080,
+        dnshost : '127.0.0.1',
+        dnsport : 53,
+        nshost  : '8.8.8.8',
+        nsport  : 53,
+        store   : 'mem',
+        domain  : require('random-domain')(),
+        ttl     : 300,
     }
 })
 var utils  = require('./utils')

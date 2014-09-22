@@ -39,7 +39,7 @@ var routes = [
 ]
 
 module.exports = function (argv,store) {
-    var server = new Hapi.Server(argv.host, argv.port)
+    var server = new Hapi.Server(argv.apihost, argv.apiport)
     routes.forEach(function (route) {
         server.route(route)
     })
