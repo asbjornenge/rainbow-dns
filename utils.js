@@ -29,6 +29,7 @@ module.exports = {
     displayStartMessage : function (argv) {
         // console.log(rainbow.r('nameserver ')+chalk.bgBlue(argv.nameserver))
         this.displayServiceStatus('domain', argv.domain)
+        this.displayServiceStatus('store', argv.store)
         // console.log(rainbow.r('ttl        ')+chalk.bgBlue(argv.ttl))
     },
 
