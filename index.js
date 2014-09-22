@@ -12,10 +12,11 @@ var argv = require('minimist')(process.argv.slice(2), {
         ttl     : 300,
     }
 })
-var utils  = require('./utils')
-var api    = require('./api')
-var dns    = require('./dns')
-var ttloop = require('./ttloop')
+var utils      = require('./utils')
+var api        = require('./api')
+var dns        = require('./dns')
+var ttloop     = require('./ttloop')
+var staticloop = require('./staticloop')
 
 utils.displayVersionMaybe(argv)
 utils.displayHelpMaybe(argv)
@@ -25,5 +26,6 @@ store.ready(function () {
     dns(argv, store).start()
     api(argv, store).start()
     ttloop(store).start()
+    if (argv.static) staticloop(argv, store).start()
     utils.displayStartMessage(argv)
 })
