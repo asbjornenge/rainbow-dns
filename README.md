@@ -8,3 +8,7 @@ Features
 * flexible domain
 * ttl
 * SRV records
+
+## Changelog
+
+* Support setting ttl=0 for inf. keeping a record even if server has ttl
