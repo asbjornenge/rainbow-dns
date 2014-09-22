@@ -2,6 +2,7 @@
   "name": "rainbow-dns",
   "version": "1.0.0",
   "description": "DNS server with http API",
+  "bin": "./index.js",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
