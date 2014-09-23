@@ -3,7 +3,10 @@ var utils = require('./utils')
 
 var match = function (record, query) {
     var wildcard = false
+    var qli      = query.split('.')
+    var rli      = record.split('.')
     if (query[0] == '*') { query = query.split('*.')[1]; wildcard = true }
+    else { rli.reverse().forEach(function (rname, index) { if (rname == qli[0] && index > 1) wildcard = true}) }
     return wildcard ? record.indexOf(query) >= 0 : record.indexOf(query) == 0
 }
 
