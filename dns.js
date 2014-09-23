@@ -27,11 +27,13 @@ RainbowDns.prototype.forward = function (request, response) {
         try {
             response.send()
         } catch(e) {
+            req.cancel()
             console.log('Error sending forward requrest: ',e)
         }
     })
     req.on('timeout', function () {
-      console.log('Timeout in making forward request');
+        req.cancel()
+        console.log('Timeout in making forward request');
     });
     req.send()
 }
@@ -55,9 +57,10 @@ RainbowDns.prototype.handleRequest = function (request, response) {
 RainbowDns.prototype.handleARequest = function (request, response) {
     var query = request.question[0].name
     this.store.list(function (err, records) {
-        if (err) { console.log(err); process.exit(1) }
+        if (err) { console.log('A REQUEST ERROR: ',err); process.exit(1) }
         Object.keys(records).forEach(function (record) {
             if (match(record,query)) {
+                if (records[record].ipv4 == undefined) { return }
                 records[record].ipv4.forEach(function (ip) {
                     response.answer.push(dns.A({
                       name    : record,
@@ -72,9 +75,10 @@ RainbowDns.prototype.handleARequest = function (request, response) {
 RainbowDns.prototype.handleAAAARequest = function (request, response) {
     var query = request.question[0].name
     this.store.list(function (err, records) {
-        if (err) { console.log(err); process.exit(1) }
+        if (err) { console.log('AAAA REQUEST ERROR: ',err); process.exit(1) }
             Object.keys(records).forEach(function (record) {
                 if (match(record, query)) {
+                    if (records[record].ipv6 == undefined) { return }
                     records[record].ipv6.forEach(function (ip) {
                         response.answer.push(dns.AAAA({
                           name    : record,

@@ -67,6 +67,10 @@ The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be over
 
 ## Changelog
 
+### 1.1.3
+
+* Fixed query match but no ipv4/ipv6 data bug
+
 ### 1.1.2
 
 * TTL sensitive interval for staticloop (with a minimum for 1s -> same as ttloop)
