@@ -12,7 +12,7 @@ var StaticLoop = function(argv, store) {
 }
 StaticLoop.prototype.start = function () {
     this.populate()
-    this.interval = setInterval(this.populate.bind(this), (this.argv.ttl*1000)-10)
+    this.interval = setInterval(this.populate.bind(this), this.intervalMillis())
 }
 StaticLoop.prototype.populate = function () {
     var records = require(pathToStatic(this.argv.static)).records
@@ -22,6 +22,10 @@ StaticLoop.prototype.populate = function () {
             if (err) console.log('NEED ERROR HANDLING! GAAH!')
         })
     }.bind(this))
+}
+StaticLoop.prototype.intervalMillis = function () {
+    var interval = (this.argv.ttl*1000)-(this.argv.ttl*100)
+    return interval > 1000 ? interval : 1000
 }
 StaticLoop.prototype.stop = function () {
     clearInterval(this.interval)
