@@ -1,5 +1,4 @@
 var assert  = require('assert')
-var matcher = require('../matcher')
 var T       = require('transducers.js')
 
 var records = {
@@ -73,8 +72,8 @@ describe('Matcher', function() {
 
         var filterAndMap = T.compose(
             T.filter(similar.bind({ query : query })),
-            T.filter(recordType.bind({ recordType : 'ipv4' })),
-            T.map(mapResponses.bind({  recordType : 'ipv4' })),
+            T.filter(recordType.bind({ recordType : type })),
+            T.map(mapResponses.bind({  recordType : type })),
             T.map(mapGroups.bind({ query : query, wildcard : wildcard }))
         )
 
