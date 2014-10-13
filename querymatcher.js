@@ -27,9 +27,17 @@ var intoGroups = function(item, index) {
     }.bind(this))
     return item
 }
-var append = function(result, x) {
-    x[1].forEach(function(record) { result.push(record) })
-    return result
+var transformer = {
+    init : function() {
+        return []
+    },
+    step : function(result, x) {
+        x[1].forEach(function(record) { result.push(record) })
+        return result
+    },
+    result : function(result) {
+        return result
+    }
 }
 
 /** This is where the magic happens **/
@@ -41,7 +49,7 @@ var matcher = function(records, query, type, wildcard) {
         T.map(intoResponses.bind({  recordType : type })),
         T.map(intoGroups.bind({ query : query, wildcard : wildcard }))
     )
-    var mapped = T.transduce(filterAndMap, append, [], records)
+    var mapped = T.transduce(records, filterAndMap, transformer)
     if (mapped.length == 0) return mapped
     var normalized = mapped.reduce(function(result, record, index, raw) {
         result[record.name+record.address] = record
