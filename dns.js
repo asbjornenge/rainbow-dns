@@ -1,14 +1,6 @@
-var dns   = require('native-dns')
-var utils = require('./utils')
-
-var match = function (record, query) {
-    var wildcard = false
-    var qli      = query.split('.')
-    var rli      = record.split('.')
-    if (query[0] == '*') { query = query.split('*.')[1]; wildcard = true }
-    else { rli.reverse().forEach(function (rname, index) { if (rname == qli[0] && index > 1) wildcard = true}) }
-    return wildcard ? record.indexOf(query) >= 0 : record.indexOf(query) == 0
-}
+var dns          = require('native-dns')
+var utils        = require('./utils')
+var queryMatcher = require('./querymatcher')
 
 var RainbowDns = function (argv, store) {
     this.argv       = argv
@@ -41,7 +33,6 @@ RainbowDns.prototype.forward = function (request, response) {
     req.send()
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
-    // TODO: Add wildcard support
     var _request = request.question[0]
     switch(_request.type) {
         case 1:
@@ -61,17 +52,10 @@ RainbowDns.prototype.handleARequest = function (request, response) {
     var query = request.question[0].name
     this.store.list(function (err, records) {
         if (err) { console.log('A REQUEST ERROR: ',err); process.exit(1) }
-        Object.keys(records).forEach(function (record) {
-            if (match(record,query)) {
-                if (records[record].ipv4 == undefined) { return }
-                records[record].ipv4.forEach(function (ip) {
-                    response.answer.push(dns.A({
-                      name    : record,
-                      address : ip,
-                      ttl     : records[record].ttl,
-                    }));
-                })
-            }
+        var matchedRecords = queryMatcher(records, query, 'ipv4')
+        // TODO: check cache entry if round-robin
+        matchedRecords.forEach(function(record) {
+            response.answer.push(dns.A(record))
         })
     })
 }
@@ -79,18 +63,11 @@ RainbowDns.prototype.handleAAAARequest = function (request, response) {
     var query = request.question[0].name
     this.store.list(function (err, records) {
         if (err) { console.log('AAAA REQUEST ERROR: ',err); process.exit(1) }
-            Object.keys(records).forEach(function (record) {
-                if (match(record, query)) {
-                    if (records[record].ipv6 == undefined) { return }
-                    records[record].ipv6.forEach(function (ip) {
-                        response.answer.push(dns.AAAA({
-                          name    : record,
-                          address : ip,
-                          ttl     : records[record].ttl,
-                        }));
-                    })
-                }
-            })
+        var matchedRecords = queryMatcher(records, query, 'ipv6')
+        // TODO: check cache entry if round-robin
+        matchedRecords.forEach(function(record) {
+            response.answer.push(dns.AAAA(record))
+        })
     })
 }
 RainbowDns.prototype.handleSRVRequest = function (request, response) {
