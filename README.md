@@ -67,6 +67,11 @@ The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be over
 
 ## Changelog
 
+### 1.2.1
+
+* New and improved query matcher
+* Groups now respond with the same name for all matches (!)
+
 ### 1.2.0
 
 * Added support for group responses
