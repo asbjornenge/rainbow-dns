@@ -6,12 +6,12 @@ var RainbowDns = function (argv, store) {
     this.argv       = argv
     this.store      = store
     this.server     = dns.createServer()
-    this.nameserver = { address: argv.fwdhost, port: argv.fwdport, type: 'udp' }
+    if (argv.fwdhost) this.fwdserver = { address: argv.fwdhost, port: argv.fwdport || 53, type: 'udp' }
 }
 RainbowDns.prototype.forward = function (request, response) {
     var req = dns.Request({
         question : request,
-        server   : this.nameserver,
+        server   : this.fwdserver,
         timeout  : 1000
     })
     req.on('message', function(err, answer) {
@@ -45,8 +45,8 @@ RainbowDns.prototype.handleRequest = function (request, response) {
             this.handleSRVRequest(request, response)
             break
     }
-    if (response.answer.length > 0) response.send()
-    else this.forward(request.question[0], response)
+    if (response.answer.length == 0 && this.fwdserver) this.forward(request.question[0], response)
+    else response.send()
 }
 RainbowDns.prototype.handleARequest = function (request, response) {
     var query = request.question[0].name
