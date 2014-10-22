@@ -12,16 +12,17 @@
 
 ## CLI Options
 
-    --apihost  // API host (default 127.0.0.1)
-    --apiport  // API port (default 8080)
-    --dnshost  // DNS host (default 127.0.0.1)
-    --dnsport  // DNS port (default 53)
-    --fwdhost  // Forward host (default 8.8.8.8)
-    --fwdport  // Forward port (default 53)
-    --ttl      // Time To Live (default 300 -> seconds)
-    --store    // Records datastore (default mem -> memory)
-    --domain   // Domain (default random)
-    --static   // Path to static records file
+    --apihost   // API host          (default 127.0.0.1)
+    --apiport   // API port          (default 8080)
+    --dnshost   // DNS host          (default 127.0.0.1)
+    --dnsport   // DNS port          (default 53)
+    --ttl       // Time To Live      (default 300 -> seconds)
+    --store     // Records datastore (default mem -> memory)
+    --domain    // Domain            (default random)
+    --fwdhost   // Forward host
+    --fwdport   // Forward port
+    --static    // Path to static records file
+    --ipv4-only // Crazy mode for Docker
 
     /* Valid static.json
     {
@@ -61,11 +62,31 @@ The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be over
     // => 192.168.1.1
 
 
+## Ipv4 Only Mode
+
+This is a temporary mode aimed to solve a special edge-case for use with Docker. It will most certainly be removed when Docker supports ipv6.
+At the time of writing however; Docker does NOT fully support ipv6. This means that we can only populate with ipv4 addresses.
+Trouble is that most all linux distributions will, when trying to resolve dns, query for both A and AAAA records. 
+It seems very distribution specific how a missing AAAA but existing A record is treated. Some distributions will just disregard the A result completely
+unless you specifically tell the application to use A results.
+
+    curl app.domain.com
+    // => unbale to resolve hostname
+    curl app.domain.com -4
+    // => 200 OK
+
+To get around this, --ipv4-only mode will return A results for both A and AAAA queries. This seems to make the linux happy.
+
 ## Missing
 
 * SRV records
 
 ## Changelog
+
+### 2.0.0
+
+* Removed default forward host - if no fwdhost is specified, empty results are returned
+* Added support for --ipv4-only
 
 ### 1.2.1
 

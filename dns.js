@@ -39,7 +39,7 @@ RainbowDns.prototype.handleRequest = function (request, response) {
             this.handleARequest(request, response)
             break
         case 28:
-            this.handleAAAARequest(request, response)
+            (this.argv['ipv4-only']) ? this.handleARequest(request, response) : this.handleAAAARequest(request, response)
             break
         case 33:
             this.handleSRVRequest(request, response)
