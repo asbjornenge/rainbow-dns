@@ -62,7 +62,7 @@ The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be over
     // => 192.168.1.1
 
 
-## Ipv4 Only Mode
+## IPv4 Only Mode
 
 This is a temporary mode aimed to solve a special edge-case for use with Docker. It will most certainly be removed when Docker supports ipv6.
 At the time of writing however; Docker does NOT fully support ipv6. This means that we can only populate with ipv4 addresses.
@@ -86,7 +86,7 @@ To get around this, --ipv4-only mode will return A results for both A and AAAA q
 ### 2.0.0
 
 * Removed default forward host - if no fwdhost is specified, empty results are returned
-* Added support for --ipv4-only
+* Added --ipv4-only crazy mode for Docker
 
 ### 1.2.1
 
