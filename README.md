@@ -71,7 +71,7 @@ It seems very distribution specific how a missing AAAA but existing A record is 
 unless you specifically tell the application to use A results.
 
     curl app.domain.com
-    // => unbale to resolve hostname
+    // => unable to resolve hostname
     curl app.domain.com -4
     // => 200 OK
 
