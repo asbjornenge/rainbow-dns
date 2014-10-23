@@ -40,7 +40,9 @@ RainbowDns.prototype.populateAndRespond = function(request, response, results) {
     results.forEach(function(resp) {
         response.answer.push(resp)
     })
-    response.send()
+    // TODO : Being able to validate each record would be nice!!
+    try { response.send() }
+    catch(e) { console.log(e); response.answer = []; response.send() }
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
     var _request     = request.question[0]
