@@ -5,7 +5,7 @@
   "bin": "./index.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -R nyan -w --check-leaks"
   },
   "repository": {
     "type": "git",
