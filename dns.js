@@ -1,4 +1,5 @@
 var dns          = require('native-dns')
+var consts       = require('native-dns-packet').consts
 var utils        = require('./utils')
 var queryMatcher = require('./querymatcher')
 
@@ -34,6 +35,9 @@ RainbowDns.prototype.forward = function (request, response) {
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
     var _request = request.question[0]
+    var types  = this.pickAnswerTypes(request, response) // <- pick keys
+    var _types = this.mapResponseObjects(types)
+    // queryStore
     switch(_request.type) {
         case 1:
             this.handleARequest(request, response)
@@ -47,6 +51,45 @@ RainbowDns.prototype.handleRequest = function (request, response) {
     }
     if (response.answer.length == 0 && this.fwdserver) this.forward(request.question[0], response)
     else response.send()
+}
+RainbowDns.prototype.pickAnswerTypes = function(request) {
+    return this.includeAnswerTypes(consts.QTYPE_TO_NAME[request.question[0].type])
+}
+RainbowDns.prototype.includeAnswerTypes = function(queryType) {
+    switch (queryType) {
+        case 'A':
+            return ['A','CNAME']
+        case 'AAAA':
+            return ['AAAA','CNAME']
+        default:
+            return [queryType]
+    }
+}
+RainbowDns.prototype.mapResponseObjects = function(responseTypes) {
+    return responseTypes
+        .map(function(rtype) {
+            return { type : rtype, obj : dns[rtype] }
+        })
+        .filter(function(mapped) {
+            return typeof mapped.obj == 'function'
+        }).reduce(function(res, current) {
+            res[current.type] = current.obj
+            return res
+        }, {})
+}
+RainbowDns.prototype.queryStore = function(request, response) {
+    var _request = request.question[0]
+    var query = request.question[0].name
+    console.log(_request.type)
+    console.log(consts.QTYPE_TO_NAME[_request.type])
+    // this.store.list(function (err, records) {
+    //     if (err) { console.log('A REQUEST ERROR: ',err); process.exit(1) }
+    //     var matchedRecords = queryMatcher(records, query, 'ipv4')
+    //     // TODO: check cache entry if round-robin
+    //     matchedRecords.forEach(function(record) {
+    //         response.answer.push(dns.A(record))
+    //     })
+    // })    
 }
 RainbowDns.prototype.handleARequest = function (request, response) {
     var query = request.question[0].name
