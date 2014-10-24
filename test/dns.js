@@ -41,10 +41,13 @@ describe('Dns', function() {
         })
         var d = dns({}, s)
         d.queryStore('yolo.dance.kiwi', ['A', 'CNAME'], function(results) {
-            console.log(results)
-            assert(results.length == 2)
-            // assert(results[0].type == 1)
-            // assert(results[1].type == 5)
+            assert(results.length == 2) // <- Enough to check this?
+            assert(results[0].type == 5)
+            assert(results[0].name == 'yolo.dance.kiwi')
+            assert(results[0].data == 'break.dance.kiwi')
+            assert(results[1].type == 1)
+            assert(results[1].name == 'break.dance.kiwi')
+            assert(results[1].address == '1.2.3.4')
             done()
         })
     })
