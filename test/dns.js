@@ -31,7 +31,7 @@ describe('Dns', function() {
         assert(filteredAnswerTypes.length == 2)
     })
 
-    it.only('should return appropriate response object from queryStore', function(done) {
+    it('should return appropriate response object from queryStore', function(done) {
         var s = memstore()
         s.set('break.dance.kiwi', {
             'A'     : [{'address':'1.2.3.4'}]
