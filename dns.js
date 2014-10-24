@@ -69,12 +69,13 @@ RainbowDns.prototype.pickAnswerTypes = function(type) {
     return this.includeAnswerTypes(consts.QTYPE_TO_NAME[type])
 }
 RainbowDns.prototype.includeAnswerTypes = function(queryType) {
-    // TODO: Support ipv6-crutch mode
     switch (queryType) {
         case 'A':
             return ['A','CNAME']
         case 'AAAA':
-            return ['AAAA','CNAME']
+            var types = ['AAAA','CNAME']
+            if (this.argv['ipv4-for-ipv6']) types.push('A')
+            return types
         default:
             return [queryType]
     }
