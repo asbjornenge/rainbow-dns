@@ -24,12 +24,12 @@ RainbowDns.prototype.forward = function (request, response) {
             response.send()
         } catch(e) {
             req.cancel()
-            console.log('Error sending forward requrest: ',e)
+            console.log('ERROR: Error sending forward requrest: ',e)
         }
     })
     req.on('timeout', function () {
         req.cancel()
-        console.log('Timeout in making forward request');
+        console.log('ERROR: Timeout in making forward request');
     });
     req.send()
 }
@@ -42,8 +42,13 @@ RainbowDns.prototype.respond = function(request, response, results) {
     })
 
     // TODO : Being able to validate each record would be nice!!
-    try { response.send() }
-    catch(e) { console.log('DATA ERROR: Some mismatch between your store data and records.',e); response.answer = []; response.send() }
+    try { 
+        response.send() 
+    }
+    catch(e) {
+        request.cancel()
+        console.log('ERROR: Some mismatch between your store data and records.',e)
+    }
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
     var _request     = request.question[0]
