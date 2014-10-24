@@ -95,6 +95,7 @@ RainbowDns.prototype.resolveCNAME = function(types, records, results) {
     if (types.indexOf('A') < 0 && types.indexOf('AAAA') < 0) return
     results.forEach(function(res) {
         if (res.type != 'CNAME') return
+        if (results.filter(function(r) { return r.name == res.data }).length > 0) return
         if (types.indexOf('A') >= 0)    queryMatcher(records, res.data, 'A').forEach(function(record) { results.push(record) })
         if (types.indexOf('AAAA') >= 0) queryMatcher(records, res.data, 'AAAA').forEach(function(record) { results.push(record) })
     })

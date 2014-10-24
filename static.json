@@ -7,8 +7,7 @@
         },
         {
             "name"  : "yolo",
-            "A"     : [{ "address" : "192.168.10.101" }],
-            "CNAME" : [{ "dat" : "dns.dance.kiwi"}]
+            "CNAME" : [{ "data" : "dns.dance.kiwi"}]
         }
     ]
 }
