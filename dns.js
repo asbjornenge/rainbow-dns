@@ -41,13 +41,15 @@ RainbowDns.prototype.respond = function(request, response, results) {
         response.answer.push(resp)
     })
 
-    // TODO : Being able to validate each record would be nice!!
+    // TODO : Being able to validate each record would be nice!! For imporved error logging
     try { 
         response.send() 
     }
     catch(e) {
-        request.cancel()
-        console.log('ERROR: Some mismatch between your store data and records.',e)
+        response.header.rcode = 2 // <- SERVERFAIL
+        response.answer = []
+        response.send()
+        console.log('ERROR: Unable to validate responses. \nSome mismatch between your store data and record requirements?\n',e)
     }
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
