@@ -33,16 +33,17 @@ RainbowDns.prototype.forward = function (request, response) {
     });
     req.send()
 }
-RainbowDns.prototype.populateAndRespond = function(request, response, results) {
+RainbowDns.prototype.respond = function(request, response, results) {
     // TODO : Populate also Authority & Additional based on results .. ?
     // TODO : Should results be sorted? CNAME pre A ?
-    // TODO : Map CNAME(s) (pick A and AAAA records to go along)
+
     results.forEach(function(resp) {
         response.answer.push(resp)
     })
+
     // TODO : Being able to validate each record would be nice!!
     try { response.send() }
-    catch(e) { console.log(e); response.answer = []; response.send() }
+    catch(e) { console.log('DATA ERROR: Some mismatch between your store data and records.',e); response.answer = []; response.send() }
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
     var _request     = request.question[0]
@@ -54,7 +55,7 @@ RainbowDns.prototype.handleRequest = function (request, response) {
             this.forward(_request, response)
         else 
             // RESPOND
-            this.populateAndRespond(request, response, results)
+            this.respond(request, response, results)
     }.bind(this))
 }
 RainbowDns.prototype.pickAnswerTypes = function(type) {
@@ -82,12 +83,20 @@ RainbowDns.prototype.queryStore = function(query, types, callback) {
     this.store.list(function (err, records) {
         if (err) { console.log('ERROR: Unable to list data in store',err); process.exit(1) }
         types.forEach(function(recordtype) {
-            var matchedRecords = queryMatcher(records, query, recordtype)
-            matchedRecords.forEach(function(record) {
-                results.push(dns[recordtype](record))
-            })
+            queryMatcher(records, query, recordtype).forEach(function(record) { results.push(record) })
         })
-        if (typeof callback === 'function') callback(results)
+        this.resolveCNAME(types, records, results)
+        var _results = results.map(function(res) { return dns[res.type](res) })
+        if (typeof callback === 'function') callback(_results)
+    }.bind(this))
+}
+RainbowDns.prototype.resolveCNAME = function(types, records, results) {
+    if (types.indexOf('CNAME') < 0) return
+    if (types.indexOf('A') < 0 && types.indexOf('AAAA') < 0) return
+    results.forEach(function(res) {
+        if (res.type != 'CNAME') return
+        if (types.indexOf('A') >= 0)    queryMatcher(records, res.data, 'A').forEach(function(record) { results.push(record) })
+        if (types.indexOf('AAAA') >= 0) queryMatcher(records, res.data, 'AAAA').forEach(function(record) { results.push(record) })
     })
 }
 RainbowDns.prototype.start = function () {

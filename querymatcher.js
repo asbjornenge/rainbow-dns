@@ -13,10 +13,11 @@ var intoResponses = function(item, index) {
     var records = data[this.recordType].map(function(store_data) {
         return {
           name       : record,
+          type       : this.recordType,
           store_data : store_data,
-          ttl        : data.ttl,            
+          ttl        : data.ttl,
         }
-    })
+    }.bind(this))
     return [ record, records ]
 }
 var intoGroups = function(item, index) {
