@@ -1,4 +1,5 @@
 var dns          = require('native-dns')
+var consts       = require('native-dns-packet').consts
 var utils        = require('./utils')
 var queryMatcher = require('./querymatcher')
 
@@ -23,55 +24,89 @@ RainbowDns.prototype.forward = function (request, response) {
             response.send()
         } catch(e) {
             req.cancel()
-            console.log('Error sending forward requrest: ',e)
+            console.log('ERROR: Error sending forward requrest: ',e)
         }
     })
     req.on('timeout', function () {
         req.cancel()
-        console.log('Timeout in making forward request');
+        console.log('ERROR: Timeout in making forward request');
     });
     req.send()
 }
-RainbowDns.prototype.handleRequest = function (request, response) {
-    var _request = request.question[0]
-    switch(_request.type) {
-        case 1:
-            this.handleARequest(request, response)
-            break
-        case 28:
-            (this.argv['ipv4-only']) ? this.handleARequest(request, response) : this.handleAAAARequest(request, response)
-            break
-        case 33:
-            this.handleSRVRequest(request, response)
-            break
-    }
-    if (response.answer.length == 0 && this.fwdserver) this.forward(request.question[0], response)
-    else response.send()
-}
-RainbowDns.prototype.handleARequest = function (request, response) {
-    var query = request.question[0].name
-    this.store.list(function (err, records) {
-        if (err) { console.log('A REQUEST ERROR: ',err); process.exit(1) }
-        var matchedRecords = queryMatcher(records, query, 'ipv4')
-        // TODO: check cache entry if round-robin
-        matchedRecords.forEach(function(record) {
-            response.answer.push(dns.A(record))
-        })
-    })
-}
-RainbowDns.prototype.handleAAAARequest = function (request, response) {
-    var query = request.question[0].name
-    this.store.list(function (err, records) {
-        if (err) { console.log('AAAA REQUEST ERROR: ',err); process.exit(1) }
-        var matchedRecords = queryMatcher(records, query, 'ipv6')
-        // TODO: check cache entry if round-robin
-        matchedRecords.forEach(function(record) {
-            response.answer.push(dns.AAAA(record))
-        })
-    })
-}
-RainbowDns.prototype.handleSRVRequest = function (request, response) {
+RainbowDns.prototype.respond = function(request, response, results) {
+    // TODO : Populate also Authority & Additional based on results .. ?
+    // TODO : Should results be sorted? CNAME pre A ?
 
+    results.forEach(function(resp) {
+        response.answer.push(resp)
+    })
+
+    // TODO : Being able to validate each record would be nice!! For imporved error logging
+    try { 
+        response.send() 
+    }
+    catch(e) {
+        response.header.rcode = 2 // <- SERVERFAIL
+        response.answer = []
+        response.send()
+        console.log('ERROR: Unable to validate responses. \nSome mismatch between your store data and record requirements?\n',e)
+    }
+}
+RainbowDns.prototype.handleRequest = function (request, response) {
+    var _request     = request.question[0]
+    var query        = _request.name
+    var answer_types = this.filterTypes(this.pickAnswerTypes(_request.type))
+    this.queryStore(query, answer_types, function(results) {
+        if (results.length == 0 && this.fwdserver) 
+            // FORWARD
+            this.forward(_request, response)
+        else 
+            // RESPOND
+            this.respond(request, response, results)
+    }.bind(this))
+}
+RainbowDns.prototype.pickAnswerTypes = function(type) {
+    return this.includeAnswerTypes(consts.QTYPE_TO_NAME[type])
+}
+RainbowDns.prototype.includeAnswerTypes = function(queryType) {
+    switch (queryType) {
+        case 'A':
+            return ['A','CNAME']
+        case 'AAAA':
+            var types = ['AAAA','CNAME']
+            if (this.argv['ipv4-for-ipv6']) types.push('A')
+            return types
+        default:
+            return [queryType]
+    }
+}
+RainbowDns.prototype.filterTypes = function(responseTypes) {
+    return responseTypes
+        .filter(function(type) {
+            return typeof dns[type] == 'function'
+        })
+}
+RainbowDns.prototype.queryStore = function(query, types, callback) {
+    var results = []
+    this.store.list(function (err, records) {
+        if (err) { console.log('ERROR: Unable to list data in store',err); process.exit(1) }
+        types.forEach(function(recordtype) {
+            queryMatcher(records, query, recordtype).forEach(function(record) { results.push(record) })
+        })
+        this.resolveCNAME(types, records, results)
+        var _results = results.map(function(res) { return dns[res.type](res) })
+        if (typeof callback === 'function') callback(_results)
+    }.bind(this))
+}
+RainbowDns.prototype.resolveCNAME = function(types, records, results) {
+    if (types.indexOf('CNAME') < 0) return
+    if (types.indexOf('A') < 0 && types.indexOf('AAAA') < 0) return
+    results.forEach(function(res) {
+        if (res.type != 'CNAME') return
+        if (results.filter(function(r) { return r.name == res.data }).length > 0) return
+        if (types.indexOf('A') >= 0)    queryMatcher(records, res.data, 'A').forEach(function(record) { results.push(record) })
+        if (types.indexOf('AAAA') >= 0) queryMatcher(records, res.data, 'AAAA').forEach(function(record) { results.push(record) })
+    })
 }
 RainbowDns.prototype.start = function () {
     this.server.on('request', this.handleRequest.bind(this))

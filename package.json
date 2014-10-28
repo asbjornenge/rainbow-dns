@@ -1,11 +1,11 @@
 {
   "name": "rainbow-dns",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "description": "DNS server with http API",
   "bin": "./index.js",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha -R nyan -w --check-leaks"
   },
   "repository": {
     "type": "git",
@@ -28,6 +28,7 @@
     "hapi": "^6.8.1",
     "minimist": "^1.1.0",
     "native-dns": "^0.6.1",
+    "native-dns-packet": "^0.1.1",
     "random-domain": "^1.0.2",
     "transducers.js": "^0.2.1"
   }

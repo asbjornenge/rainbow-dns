@@ -53,7 +53,7 @@ module.exports = {
     wrapDefaults : function (name, payload, argv) {
         name = name+'.'+(payload.domain || argv.domain)
         if (!payload.domain) payload.domain = argv.domain
-        if (!payload.ttl) payload.ttl       = argv.ttl
+        if (!payload.ttl)    payload.ttl    = argv.ttl
         payload.time                        = this.getUnixTime()
         return {
             name    : name,
@@ -63,6 +63,18 @@ module.exports = {
 
     getUnixTime : function () {
         return Math.floor(new Date().getTime() / 1000)
+    },
+
+    reverse_map : function(src) {
+        var dst = {},
+        k;
+
+        for (k in src) {
+            if (src.hasOwnProperty(k)) {
+                dst[src[k]] = k;
+            }
+        }
+        return dst;
     }
 
 }
