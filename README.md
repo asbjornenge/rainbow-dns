@@ -12,25 +12,49 @@
 
 ## CLI Options
 
-    --apihost   // API host          (default 127.0.0.1)
-    --apiport   // API port          (default 8080)
-    --dnshost   // DNS host          (default 127.0.0.1)
-    --dnsport   // DNS port          (default 53)
-    --ttl       // Time To Live      (default 300 -> seconds)
-    --store     // Records datastore (default mem -> memory)
-    --domain    // Domain            (default random)
-    --fwdhost   // Forward host
-    --fwdport   // Forward port
-    --static    // Path to static records file
-    --ipv4-only // Crazy mode for Docker
+    --apihost       // API host          (default 127.0.0.1)
+    --apiport       // API port          (default 8080)
+    --dnshost       // DNS host          (default 127.0.0.1)
+    --dnsport       // DNS port          (default 53)
+    --ttl           // Time To Live      (default 300 -> seconds)
+    --store         // Records datastore (default mem -> memory)
+    --domain        // Domain            (default random)
+    --fwdhost       // Forward host
+    --fwdport       // Forward port
+    --static        // Path to static records file
+    --ipv4-for-ipv6 // Broken linux NODATA response handling crutch
 
-    /* Valid static.json
+### fwdhost
+
+By passing a ***\-\-fwdhost*** flag you can **forward** requests to another dns server if rainbow-dns don't have any matching records.
+
+    rainbow-dns --fwdhost 8.8.8.8
+
+### static
+
+By passing a ***\-\-static*** flag you can inject some **static records** from a **json** file.
+
+    rainbow-dns --static ./static.json --domain dance.kiwi
+
+    // Example static.json
     {
         "records" : [
-            { "name" : "dns", "ipv4" : ["192.168.1.100"] }
+            { "name" : "break",   "A"     : [{"address" : "192.168.1.100"}] }
+            { "name" : "popping", "CNAME" : [{"data"    : "break.dance.kiwi"}] }
         ]
     }
-    */
+
+### ipv4-for-ipv6
+
+Due to an [issue](https://github.com/asbjornenge/rainbow-dns/issues/5) with some recent linux distributions not properly handling (valid) NODATA responses, you can set the **\-\-ipv4-for-ipv6** flag to include A records
+in response to AAAA requests and thereby working around this issue.
+
+**Symptom:**
+
+    curl app.domain.com
+    // unable to resolve hostname
+    curl app.domain.com -4
+    // 200 OK
 
 ## API
 
@@ -41,47 +65,42 @@
     DELETE /{name}
         Delete record name.domain
 
-    /* Valid json payload
+    // Valid json payload
     {
-        "ipv4" : ["192.168.1.1","192.168.10.1"],   // A records - valid ipv4 addresses
-        "ipv6" : ["2605:f8b0:4006:802:0:0:0:1010"] // AAAA records - valid ipv6 addresses
+        "A"     : [{"address" : "192.168.1.1"},{"address" : "192.168.10.1"}],
+        "AAAA"  : [{"address" : "2605:f8b0:4006:802:0:0:0:1010"}]
     }
-    */
 
-The endpoints all expect a valid JSON struct. Defaults (domain, ttl) can be overwritten by PUTs.
+Rainbow-dns supports all **record types** listed **[here](https://github.com/tjfontaine/node-dns#resourcerecord)** provided that you include the **required properties**, with appropriate name and value, for the respective record type. Rainbow-dns will **not validate** your input and will only eject an error message upon requests if your record data is invalid.
+
+The payload for a **CNAME** record would look something like this:
+
+    {
+        "CNAME" : [{"data" : "elsewhere.domain.com"}]
+    }
+
+**Defaults** (domain, ttl) can be included in the payload and thereby **overwritten** by PUTs.
 
 ## Example cURL
 
-    curl -X PUT localhost:8080/database -d '{"ipv4":["192.168.1.1"],"ttl":999}' -H 'Content-Type: application/json'
+    curl -X PUT localhost:8080/database -d '{"A": [{"address" : "192.168.1.10"}], "ttl" : 999}' -H 'Content-Type: application/json'
 
 ## Example dig
 
     dig @localhost database.polychromatic.mo +short
-    // => 192.168.1.1
-    dig @localhost "*.polychromatic.mo" +short
-    // => 192.168.1.1
-
-
-## IPv4 Only Mode
-
-This is a temporary mode aimed to solve a special edge-case for use with Docker. It will most certainly be removed when Docker supports ipv6.
-At the time of writing however; Docker does NOT fully support ipv6. This means that we can only populate with ipv4 addresses.
-Trouble is that most all linux distributions will, when trying to resolve dns, query for both A and AAAA records. 
-It seems very distribution specific how a missing AAAA but existing A record is treated. Some distributions will just disregard the A result completely
-unless you specifically tell the application to use A results.
-
-    curl app.domain.com
-    // => unable to resolve hostname
-    curl app.domain.com -4
-    // => 200 OK
-
-To get around this, --ipv4-only mode will return A results for both A and AAAA queries. This seems to make the linux happy.
-
-## Missing
-
-* SRV records
+    // 192.168.1.10
+    dig @localhost polychromatic.mo
+    // polychromatic.mo.             5   IN  A   192.168.1.10
+    dig @localhost "*.polychromatic.mo"
+    // database.polychromatic.mo.    5   IN  A   192.168.1.10
 
 ## Changelog
+
+### 3.0.0
+
+* Flexible record support (support any record supported by native-dns as long as you set the correct data)
+* Support for CNAME records :tada:
+* Renamed --ipv4-only -> --ipv4-for-ipv6
 
 ### 2.0.0
 
