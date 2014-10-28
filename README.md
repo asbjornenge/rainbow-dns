@@ -71,7 +71,7 @@ in response to AAAA requests and thereby working around this issue.
         "AAAA"  : [{"address" : "2605:f8b0:4006:802:0:0:0:1010"}]
     }
 
-Rainbow-dns supports all **record types** listed **[here](https://github.com/tjfontaine/node-dns#resourcerecord)** provided that you include the **required properties**, with appropriate name and value, for the respective record type. Rainbow-dns will **not validate** your input and will only eject an error message upon requests if your record data is invalid.
+Rainbow-dns supports all **record types** listed **[here](https://github.com/tjfontaine/node-dns#resourcerecord)** provided that you include the **required properties**, with appropriate key and value, for the respective record type. Rainbow-dns will **not validate** your input and will only eject an error message upon requests if your record data is invalid.
 
 The payload for a **CNAME** record would look something like this:
 
