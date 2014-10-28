@@ -46,7 +46,7 @@ By passing a ***\-\-static*** flag you can inject some **static records** from a
 
 ### ipv4-for-ipv6
 
-Due to an [issue](https://github.com/asbjornenge/rainbow-dns/issues/5) with some recent linux distributions not properly handling (valid) NODATA responses, you can set the **\-\-ipv4-for-ipv6** flag to include A records
+Due to an [issue](https://github.com/asbjornenge/rainbow-dns/issues/5) with some recent linux distributions not properly handling (valid) [NODATA](https://www.ietf.org/rfc/rfc2308.txt) responses, you can set the **\-\-ipv4-for-ipv6** flag to include A records
 in response to AAAA requests and thereby working around this issue.
 
 **Symptom:**
