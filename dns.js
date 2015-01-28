@@ -20,6 +20,7 @@ RainbowDns.prototype.forward = function (request, response) {
         response.authority    = answer.authority
         response.additional   = answer.additional
         response.edns_options = answer.edns_options
+        response.header.ra    = 1
         try {
             response.send()
         } catch(e) {
@@ -40,6 +41,9 @@ RainbowDns.prototype.respond = function(request, response, results) {
     results.forEach(function(resp) {
         response.answer.push(resp)
     })
+
+    // On some versions of glibc the resolver fails if response not advertised as recursive
+    response.header.ra = 1
 
     // TODO : Being able to validate each record would be nice!! For imporved error logging
     try { 

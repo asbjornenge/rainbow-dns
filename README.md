@@ -96,6 +96,10 @@ The payload for a **CNAME** record would look something like this:
 
 ## Changelog
 
+### 3.0.1
+
+* Advertising recursion (setting ra header), fixes resolving on some platforms
+
 ### 3.0.0
 
 * Flexible record support (support any record supported by native-dns as long as you set the correct data)
