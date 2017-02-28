@@ -22,6 +22,10 @@ var records = {
     'test2.another.com' : {
         A   : [{'address':'5.5.5.5'},{'address':'6.6.6.6'}],
         ttl : 30
+    },
+    'test.upperCase.com' : {
+        A   : [{'address':'5.5.5.5'}],
+        ttl : 30
     }
 }
 
@@ -62,6 +66,13 @@ describe('Matcher', function() {
     it('Should support CNAME queries too', function() {
         var results = queryMatcher(records, 'test.domain.com', 'CNAME')
         assert(results.length == 1)
+    })
+
+    it('Should not be case sensitive', function() {
+        var queryUpResults = queryMatcher(records, 'Another.com', 'A')
+        assert(queryUpResults.length > 0)
+        var queryDownResults = queryMatcher(records, 'uppercase.com', 'A')
+        assert(queryDownResults.length == 1)
     })
 
 })
