@@ -1,6 +1,6 @@
 {
   "name": "rainbow-dns",
-  "version": "3.0.1",
+  "version": "4.0.0",
   "description": "DNS server with http API",
   "bin": "./index.js",
   "main": "index.js",
