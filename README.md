@@ -96,6 +96,10 @@ The payload for a **CNAME** record would look something like this:
 
 ## Changelog
 
+### 4.0.0
+
+* Fixed issue with case sensitive matching. `rainbow-dns`'s matching is now case insensitive :point_right: [rfc 4343](https://tools.ietf.org/html/rfc4343). Thanks to @valentin2105 for catching this one! :rainbow: :tada:
+
 ### 3.0.1
 
 * Advertising recursion (setting ra header), fixes resolving on some platforms
