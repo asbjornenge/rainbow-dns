@@ -2,7 +2,7 @@ var T = require('transducers.js')
 
 var onlySimilar = function(item, index) {
     var record = item[0]
-    return record.indexOf(this.query) >= 0
+    return record.toLowerCase().indexOf(this.query.toLowerCase()) >= 0
 }
 var onlyRecordType = function(item, index) {
     return item[1][this.recordType] != undefined
@@ -12,7 +12,7 @@ var intoResponses = function(item, index) {
     var data    = item[1]
     var records = data[this.recordType].map(function(store_data) {
         return {
-          name       : record,
+          name       : record.toLowerCase(),
           type       : this.recordType,
           store_data : store_data,
           ttl        : data.ttl,
@@ -24,7 +24,7 @@ var intoGroups = function(item, index) {
     var record_name = item[0]
     var records     = item[1]
     if (!this.wildcard && record_name != this.query) records.forEach(function(record) {
-        record.name = this.query
+        record.name = this.query.toLowerCase()
     }.bind(this))
     return item
 }

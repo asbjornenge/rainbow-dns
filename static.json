@@ -9,6 +9,10 @@
             "name"  : "yolo",
             "CNAME" : [{ "data" : "dns.dance.kiwi"}]
         },
+        {
+            "name"  : "yoLo",
+            "CNAME" : [{ "data" : "dns.upperCasedance.kiwi"}]
+        },
         { 
             "name"  : "no6", 
             "A"     : [{ "address" : "192.168.10.101" }]
