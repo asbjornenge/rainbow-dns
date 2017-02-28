@@ -58,7 +58,7 @@ RainbowDns.prototype.respond = function(request, response, results) {
 }
 RainbowDns.prototype.handleRequest = function (request, response) {
     var _request     = request.question[0]
-    var query        = (_request.name).toLowerCase()
+    var query        = _request.name
     var answer_types = this.filterTypes(this.pickAnswerTypes(_request.type))
     this.queryStore(query, answer_types, function(results) {
         if (results.length == 0 && this.fwdserver) 
