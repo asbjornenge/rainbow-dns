@@ -142,4 +142,4 @@ The payload for a **CNAME** record would look something like this:
 
 ### 1.0.0
 
-* Intial release :tada:
+* Initial release :tada:
