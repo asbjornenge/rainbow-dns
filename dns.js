@@ -25,7 +25,7 @@ RainbowDns.prototype.forward = function (request, response) {
             response.send()
         } catch(e) {
             req.cancel()
-            console.log('ERROR: Error sending forward requrest: ',e)
+            console.log('ERROR: Error sending forward request: ',e)
         }
     })
     req.on('timeout', function () {
