@@ -45,7 +45,7 @@ RainbowDns.prototype.respond = function(request, response, results) {
     // On some versions of glibc the resolver fails if response not advertised as recursive
     response.header.ra = 1
 
-    // TODO : Being able to validate each record would be nice!! For imporved error logging
+    // TODO : Being able to validate each record would be nice!! For improved error logging
     try { 
         response.send() 
     }
